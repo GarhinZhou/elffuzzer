@@ -1,0 +1,45 @@
+#!/bin/bash
+
+BLUE="\033[0;34m"
+RED="\033[0;31m"
+NC="\033[0m"
+
+while getopts "i:o:" opt; do
+    case $opt in
+        i) INPUT="$OPTARG" ;;
+        o) OUTPUT="$OPTARG" ;;
+    esac
+done
+
+if [ -z "$INPUT" ]; then
+    echo -e "${RED}ERROR${NC} : Use '-i' to attach inputpath."
+    echo -e "${BLUE}Usage${NC} : $0 -i <inputpath> -o <outputpath> -e <ELFpath> "
+    exit 1
+fi
+if [ ! -d "$INPUT" ]; then
+    echo -e "${RED}ERROR${NC} : '$INPUT' is not a dir!"
+    exit 1
+fi
+
+if [ -z "$OUTPUT" ]; then
+    echo -e "${RED}ERROR${NC} : Use '-o' to attach outputpath."
+    echo -e "${BLUE}Usage${NC} : $0 -i <inputpath> -o <outputpath> -e <ELFpath> "
+    exit 1
+fi
+if [ ! -d "$OUTPUT" ]; then
+    echo -e "${RED}ERROR${NC} : '$OUTPUT' is not a dir!"
+    exit 1
+fi
+
+chmod 777 $INPUT $OUTPUT
+echo "inputpath : $INPUT"
+echo "outputpath : $OUTPUT"
+
+docker run -d \
+-u $(id -u):$(id -g) \
+--mount type=bind,source=$INPUT,target=/input \
+--mount type=bind,source=$OUTPUT,target=/output \
+--name fuzzer \
+fuzzer:latest
+
+echo "Docker started"

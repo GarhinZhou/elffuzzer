@@ -1,0 +1,21 @@
+#!/bin/bash
+
+BLUE="\033[0;34m"
+RED="\033[0;31m"
+NC="\033[0m"
+
+ELFADDR="$1"
+
+if [ -z "$ELFADDR" ]; then
+    echo -e "${RED}ERROR${NC} : Must attach elfpath."
+    echo -e "${BLUE}Usage${NC} : $0 <ELFpath>"
+    exit 1
+fi
+if [ ! -f "$ELFADDR" ]; then
+    echo -e "${RED}ERROR${NC} : '$ELFADDR' is not a file!"
+    exit 1
+fi
+
+docker cp $ELFADDR fuzzer:/elf
+
+docker exec -it fuzzer bash
