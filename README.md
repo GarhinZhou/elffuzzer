@@ -13,7 +13,7 @@ Navigate to the build directory and run build.sh to create the Docker image.
 Run initdocker.sh and provide the paths for your input (seeds) and output (crashes).
 
 
-3、Start the environment: 
+3、Enter the container: 
 
 Execute startfuzz followed by the path to your ELF file.
 
